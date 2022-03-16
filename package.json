@@ -1,12 +1,13 @@
 {
-    "name": "com.itisnotonlyme.nombre",
+    "name": "com.itisnotonlyme.inventario",
     "version": "1.0.0",
-    "displayName": "Nombre Lindo",
-    "description": "Descripcion linda",
+    "displayName": "Inventario",
+    "description": "Bloques minimos para crear un inventario",
     "unity": "2020.3",
     "keywords": [
-      "Key", 
-      "Words"
+      "Inventario", 
+      "Item",
+      "Organizar"
     ],
     "author": {
       "name": "Juan Ignacio Biancuzzo",

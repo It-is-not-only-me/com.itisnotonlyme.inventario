@@ -1,6 +1,9 @@
-﻿namespace ItIsNotOnlyMe.Inventario
+﻿using System;
+using UnityEngine;
+
+namespace ItIsNotOnlyMe.Inventario
 {
-    public struct Stack
+    public class Stack
     {
         private IItem _item;
         private int _cantidad;
@@ -33,6 +36,11 @@
         public bool Vacio()
         {
             return _cantidad == 0;
+        }
+
+        public int Cantidad()
+        {
+            return _cantidad;
         }
     }
 }

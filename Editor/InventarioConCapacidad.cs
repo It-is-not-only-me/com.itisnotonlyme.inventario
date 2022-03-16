@@ -1,25 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
-using UnityEngine;
 
 namespace ItIsNotOnlyMe.Inventario
 {
-    public class Inventario : IInventario
+    public class InventarioConCapacidad : IInventario
     {
+        private int _capacidad;
         private List<Stack> _stacks;
 
-        public Inventario()
+        public InventarioConCapacidad(int capacidad)
         {
+            _capacidad = capacidad;
             _stacks = new List<Stack>();
         }
 
         public bool Agregar(IItem item)
         {
+            if (Lleno())
+                return false;
+
             foreach (Stack stack in _stacks)
                 if (stack.EsIgual(item))
                 {
                     stack.Agregar(item);
-                    stack.Cantidad();
                     return true;
                 }
 
@@ -41,20 +44,27 @@ namespace ItIsNotOnlyMe.Inventario
                     return true;
                 }
 
-            return false;
-        }
-
-        public int Cantidad()
-        {            
-            int cantidadTotal = 0;
-            _stacks.ForEach(stack => cantidadTotal += stack.Cantidad());
-            return cantidadTotal;
+            _stacks.Add(new Stack(item));
+            return true;
         }
 
         public IEnumerator GetEnumerator()
         {
             foreach (Stack stack in _stacks)
                 yield return stack;
+        }
+
+        public int Cantidad()
+        {
+            int cantidadTotal = 0;
+            foreach (Stack stack in _stacks)
+                cantidadTotal += stack.Cantidad();
+            return cantidadTotal;
+        }
+
+        private bool Lleno()
+        {
+            return _stacks.Count >= _capacidad;
         }
 
         private bool Vacio()

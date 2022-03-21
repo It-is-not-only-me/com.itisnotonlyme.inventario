@@ -42,5 +42,10 @@ namespace ItIsNotOnlyMe.Inventario
         {
             return _cantidad;
         }
+
+        public IItem GetItem()
+        {
+            return _item;
+        }
     }
 }

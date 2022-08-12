@@ -1,2 +1,3 @@
-# Unity-Packages
-Este repositorio va a tener todos los packages que vaya creando para crear mis juegos
+# Inventario
+
+El sistema esta hecho para poder expandirlo y adaptarlo al proyecto en cuestion, esto permite agregar funcionalidad manteniendo las buenas practicas y sin complicar el codigo ya existente. Todas las operaciones puede sacarse o agregarse dependiendo del proyecto.

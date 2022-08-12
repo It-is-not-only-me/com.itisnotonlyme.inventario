@@ -1,13 +1,14 @@
 using System.Collections;
+using UnityEngine;
 
 namespace ItIsNotOnlyMe.Inventario
 {
-    public interface IInventario : IEnumerable
+    public interface IInventario
     {
-        public bool Agregar(IItem item);
+        public bool AgregarEspacio(IEspacio espacio);
 
-        public bool Sacar(IItem item);
+        public void AplicarOperacion(IOperacionElementos operacion);
 
-        public int Cantidad();
+        public void AplicarOperacion(IOperacionEspacios operacion);
     }
 }

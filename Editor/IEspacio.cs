@@ -4,6 +4,8 @@
     {
         public bool AgregarElemento(IElemento elemento);
 
+        public bool SacarElemento(IElemento elemento);
+
         public bool PuedeAgregarElemento(IElemento elemento);
 
         public void AplicarOperacion(IOperacionElementos operacion);

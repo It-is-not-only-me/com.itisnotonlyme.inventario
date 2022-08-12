@@ -1,83 +1,5 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 using ItIsNotOnlyMe.Inventario;
-using UnityEngine;
-
-public class ElementoPrueba : IElemento
-{
-    private int _id;
-
-    public ElementoPrueba(int id)
-    {
-        _id = id;
-    }
-
-    public bool EsIgual(IElemento elemento)
-    {
-        ElementoPrueba elementoPrueba = elemento as ElementoPrueba;
-        return elementoPrueba._id == _id;
-    }
-}
-
-public abstract class SlotPrueba : IEspacio
-{
-    protected List<IElemento> _elementos;
-
-    public SlotPrueba()
-    {
-        _elementos = new List<IElemento>();
-    }
-
-    public bool AgregarElemento(IElemento elemento)
-    {
-        if (!PuedeAgregarElemento(elemento))
-            return false;
-
-        _elementos.Add(elemento);
-        return true;
-    }
-
-    public void AplicarOperacion(IOperacionElementos operacion)
-    {
-        foreach (IElemento elemento in _elementos)
-            operacion.Aplicar(elemento);
-    }
-
-    public void AplicarOperacion(IOperacionEspacios operacion)
-    {
-        operacion.Aplicar(this);
-    }
-
-    public abstract bool PuedeAgregarElemento(IElemento elemento);
-}
-
-public class SlotInfinitoPrueba : SlotPrueba
-{
-    public SlotInfinitoPrueba()
-    {
-    }
-
-    public override bool PuedeAgregarElemento(IElemento elemento)
-    {
-        return true;
-    }
-}
-
-public class SlotEspecificoPrueba : SlotPrueba
-{
-    public IElemento _elementoEspecifico;
-
-    public SlotEspecificoPrueba(IElemento elementoEspecifico)
-    {
-        _elementoEspecifico = elementoEspecifico;
-    }
-
-    public override bool PuedeAgregarElemento(IElemento elemento)
-    {
-        return _elementoEspecifico.EsIgual(elemento);
-    }
-}
-
 
 public class InventarioTest
 {
@@ -160,5 +82,40 @@ public class InventarioTest
         Assert.AreEqual(1, cantidadElementosPrincipales);
         Assert.AreEqual(2, cantidadElementosDiferentes);
         Assert.AreEqual(3, cantidadElementosTotales);
+    }
+
+    [Test]
+    public void Test07InventarioNoSePuedeEliminarElementoQueNoTiene()
+    {
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
+
+        inventario.AgregarEspacio(slotEspecificoDiferente);
+
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+
+        Assert.IsFalse(inventario.SacarElemento(_elementoPrincipal));
+    }
+
+    [Test]
+    public void Test08InventarioDisminuyeLaCantidadConLaCantidadDeElementosDespuesDeEliminarUnElemento()
+    {
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecificoPrincipal = new SlotEspecificoPrueba(_elementoPrincipal);
+        IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
+
+        inventario.AgregarEspacio(slotEspecificoPrincipal);
+        inventario.AgregarEspacio(slotEspecificoDiferente);
+
+        Assert.IsTrue(inventario.AgregarElemento(_elementoPrincipal));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+
+        Assert.IsTrue(inventario.SacarElemento(_elementoPrincipal));
+
+        int cantidadElementosTotales = inventario.CantidadElementosTotales();
+
+        Assert.AreEqual(2, cantidadElementosTotales);
     }
 }

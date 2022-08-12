@@ -25,6 +25,13 @@ namespace ItIsNotOnlyMe.Inventario
             return operacion.SePudoAgregar();
         }
 
+        public bool SacarElemento(IElemento elemento)
+        {
+            SacarElemento operacion = new SacarElemento(elemento);
+            AplicarOperacion(operacion);
+            return operacion.SePudoEliminar();
+        }
+
         public bool TieneEspacio(IElemento elemento)
         {
             TieneEspacio operacion = new TieneEspacio(elemento);
@@ -64,5 +71,27 @@ namespace ItIsNotOnlyMe.Inventario
             foreach (IEspacio espacio in _espacios)
                 operacion.Aplicar(espacio);
         }
+    }
+
+    public class SacarElemento : IOperacionEspacios
+    {
+        private IElemento _elemento;
+        private bool _seElimino;
+
+        public SacarElemento(IElemento elemento)
+        {
+            _elemento = elemento;
+            _seElimino = false;
+        }
+
+        public void Aplicar(IEspacio espacios)
+        {
+            if (_seElimino)
+                return;
+
+            _seElimino = espacios.SacarElemento(_elemento);
+        }
+
+        public bool SePudoEliminar() => _seElimino;
     }
 }

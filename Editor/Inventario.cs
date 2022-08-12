@@ -1,65 +1,97 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace ItIsNotOnlyMe.Inventario
 {
     public class Inventario : IInventario
     {
-        private List<Stack> _stacks;
+        public List<IEspacio> _espacios;
 
         public Inventario()
         {
-            _stacks = new List<Stack>();
+            _espacios = new List<IEspacio>();
         }
 
-        public bool Agregar(IItem item)
+        public bool AgregarEspacio(IEspacio espacio)
         {
-            foreach (Stack stack in _stacks)
-                if (stack.EsIgual(item))
-                {
-                    stack.Agregar(item);
-                    stack.Cantidad();
-                    return true;
-                }
-
-            _stacks.Add(new Stack(item));
+            _espacios.Add(espacio);
             return true;
         }
 
-        public bool Sacar(IItem item)
+        public bool AgregarElemento(IElemento elemento)
         {
-            if (Vacio())
-                return false;
-
-            foreach (Stack stack in _stacks)
-                if (stack.EsIgual(item))
-                {
-                    stack.Sacar(item);
-                    if (stack.Vacio())
-                        _stacks.Remove(stack);
-                    return true;
-                }
-
-            return false;
+            AgregarElemento operacion = new AgregarElemento(elemento);
+            AplicarOperacion(operacion);
+            return operacion.SePudoAgregar();
         }
 
-        public int Cantidad()
-        {            
-            int cantidadTotal = 0;
-            _stacks.ForEach(stack => cantidadTotal += stack.Cantidad());
-            return cantidadTotal;
-        }
-
-        public IEnumerator GetEnumerator()
+        public bool SacarElemento(IElemento elemento)
         {
-            foreach (Stack stack in _stacks)
-                yield return stack;
+            SacarElemento operacion = new SacarElemento(elemento);
+            AplicarOperacion(operacion);
+            return operacion.SePudoEliminar();
         }
 
-        private bool Vacio()
+        public bool TieneEspacio(IElemento elemento)
         {
-            return _stacks.Count == 0;
+            TieneEspacio operacion = new TieneEspacio(elemento);
+            AplicarOperacion(operacion);
+            return operacion.TieneEspacioParaElemento();
         }
+
+        public int CantidadElementosTotales()
+        {
+            CantidadElementosTotales operacion = new CantidadElementosTotales();
+            AplicarOperacion(operacion);
+            return operacion.CantidadTotal();
+        }
+
+        public int CantidadElementos(IElemento elemento)
+        {
+            ElementosIguales operacion = new ElementosIguales(elemento);
+            AplicarOperacion(operacion);
+            return operacion.CantidadTotal();
+        }
+
+        public List<IElemento> ObtenerElementos()
+        {
+            ObtenerElementos operacion = new ObtenerElementos();
+            AplicarOperacion(operacion);
+            return operacion.ElementosObtenidos();
+        }
+
+        public void AplicarOperacion(IOperacionElementos operacion)
+        {
+            foreach (IEspacio espacio in _espacios)
+                espacio.AplicarOperacion(operacion);
+        }
+
+        public void AplicarOperacion(IOperacionEspacios operacion)
+        {
+            foreach (IEspacio espacio in _espacios)
+                operacion.Aplicar(espacio);
+        }
+    }
+
+    public class SacarElemento : IOperacionEspacios
+    {
+        private IElemento _elemento;
+        private bool _seElimino;
+
+        public SacarElemento(IElemento elemento)
+        {
+            _elemento = elemento;
+            _seElimino = false;
+        }
+
+        public void Aplicar(IEspacio espacios)
+        {
+            if (_seElimino)
+                return;
+
+            _seElimino = espacios.SacarElemento(_elemento);
+        }
+
+        public bool SePudoEliminar() => _seElimino;
     }
 }

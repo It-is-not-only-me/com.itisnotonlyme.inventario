@@ -3,116 +3,119 @@ using ItIsNotOnlyMe.Inventario;
 
 public class InventarioTest
 {
-    private class ItemPrueba : IItem
-    {
-        private static int _contador = 0;
-        private int _id;
-
-        public ItemPrueba()
-        {
-            _id = _contador;
-            _contador++;
-        }
-
-        public bool EsIgual(IItem item)
-        {
-            return item.EsIgual(_id);
-        }
-
-        public bool EsIgual(int id)
-        {
-            return _id == id;
-        }
-    }
-
-    private ItemPrueba _item1, _item2, _item3, _item4, _item5;
+    private IElemento _elementoPrincipal, _elementoDiferente;
 
     public InventarioTest()
     {
-        _item1 = new ItemPrueba();
-        _item2 = new ItemPrueba();
-        _item3 = new ItemPrueba();
-        _item4 = new ItemPrueba();
-        _item5 = new ItemPrueba();
+        _elementoPrincipal = new ElementoPrueba(1);
+        _elementoDiferente = new ElementoPrueba(2);
     }
 
     [Test]
-    public void Test01UnInventarioSinItemsTieneUnaCantidadDeCero()
+    public void Test01InventarioEmpiezaSinEspacio()
     {
-        IInventario inventario = new Inventario();
+        Inventario inventario = new Inventario();
 
-        Assert.AreEqual(0, inventario.Cantidad());
+
+        Assert.IsFalse(inventario.TieneEspacio(_elementoPrincipal));
     }
 
     [Test]
-    public void Test02UnInventarioConUnItemAgregadoTieneCantidadUno()
+    public void Test02InventarioSinEspacioNoPuedeAgregarNada()
     {
-        IInventario inventario = new Inventario();
-        bool pudoAgregarlo = inventario.Agregar(_item1);
+        Inventario inventario = new Inventario();
 
-        Assert.IsTrue(pudoAgregarlo);
-
-        Assert.AreEqual(1, inventario.Cantidad());
+        Assert.IsFalse(inventario.AgregarElemento(_elementoPrincipal));
     }
 
     [Test]
-    public void Test03UnInventarioConDosItemsDiferentesTieneCantidadDos()
+    public void Test03InventarioAgregandoleUnEspacioTieneEspacio()
     {
-        IInventario inventario = new Inventario();
-        bool pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        Inventario inventario = new Inventario();
+        IEspacio slotInfinito = new SlotInfinitoPrueba();
 
-        pudoAgregarlo = inventario.Agregar(_item2);
-        Assert.IsTrue(pudoAgregarlo);
+        inventario.AgregarEspacio(slotInfinito);
 
-        Assert.AreEqual(2, inventario.Cantidad());
+        Assert.IsTrue(inventario.TieneEspacio(_elementoPrincipal));
     }
 
     [Test]
-    public void Test04UnInventarioConDosItemsIgualesTieneCantidadDos()
+    public void Test04InventarioConEspacioSeAgregaSePuedeAgregarUnElemento()
     {
-        IInventario inventario = new Inventario();
-        bool pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        Inventario inventario = new Inventario();
+        IEspacio slotInfinito = new SlotInfinitoPrueba();
 
-        pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        inventario.AgregarEspacio(slotInfinito);
 
-        Assert.AreEqual(2, inventario.Cantidad());
+        Assert.IsTrue(inventario.AgregarElemento(_elementoPrincipal));
     }
 
     [Test]
-    public void Test05UnInventarioConDosItemsYDespuesSacarUnoTieneCantidadUno()
+    public void Test05InventarioConEspacioParaElementosEspecificosNoTieneEspacioParaOtrosElementos()
     {
-        IInventario inventario = new Inventario();
-        bool pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecifico = new SlotEspecificoPrueba(_elementoPrincipal);
 
-        pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        inventario.AgregarEspacio(slotEspecifico);
 
-        bool pudoSacarlo = inventario.Sacar(_item1);
-        Assert.IsTrue(pudoSacarlo);
-
-        Assert.AreEqual(1, inventario.Cantidad());
+        Assert.IsFalse(inventario.TieneEspacio(_elementoDiferente));
     }
 
     [Test]
-    public void Test06UnInventarioConDosItemsSeSacaUnoYSeDevuelveElCorrecto()
+    public void Test06InventarioSeAgreganTresElementosYSeDevuelvenLaMismaCantidad()
     {
-        IInventario inventario = new Inventario();
-        bool pudoAgregarlo = inventario.Agregar(_item1);
-        Assert.IsTrue(pudoAgregarlo);
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecificoPrincipal = new SlotEspecificoPrueba(_elementoPrincipal);
+        IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
 
-        pudoAgregarlo = inventario.Agregar(_item2);
-        Assert.IsTrue(pudoAgregarlo);
+        inventario.AgregarEspacio(slotEspecificoPrincipal);
+        inventario.AgregarEspacio(slotEspecificoDiferente);
 
-        bool pudoSacarlo = inventario.Sacar(_item1);
-        Assert.IsTrue(pudoSacarlo);
+        Assert.IsTrue(inventario.AgregarElemento(_elementoPrincipal));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
 
-        foreach (Stack stack in inventario)
-        {
-            Assert.IsTrue(stack.EsIgual(_item2));
-        }
+        int cantidadElementosPrincipales = inventario.CantidadElementos(_elementoPrincipal);
+        int cantidadElementosDiferentes = inventario.CantidadElementos(_elementoDiferente);
+        int cantidadElementosTotales = inventario.CantidadElementosTotales();
+
+        Assert.AreEqual(1, cantidadElementosPrincipales);
+        Assert.AreEqual(2, cantidadElementosDiferentes);
+        Assert.AreEqual(3, cantidadElementosTotales);
+    }
+
+    [Test]
+    public void Test07InventarioNoSePuedeEliminarElementoQueNoTiene()
+    {
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
+
+        inventario.AgregarEspacio(slotEspecificoDiferente);
+
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+
+        Assert.IsFalse(inventario.SacarElemento(_elementoPrincipal));
+    }
+
+    [Test]
+    public void Test08InventarioDisminuyeLaCantidadConLaCantidadDeElementosDespuesDeEliminarUnElemento()
+    {
+        Inventario inventario = new Inventario();
+        IEspacio slotEspecificoPrincipal = new SlotEspecificoPrueba(_elementoPrincipal);
+        IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
+
+        inventario.AgregarEspacio(slotEspecificoPrincipal);
+        inventario.AgregarEspacio(slotEspecificoDiferente);
+
+        Assert.IsTrue(inventario.AgregarElemento(_elementoPrincipal));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+        Assert.IsTrue(inventario.AgregarElemento(_elementoDiferente));
+
+        Assert.IsTrue(inventario.SacarElemento(_elementoPrincipal));
+
+        int cantidadElementosTotales = inventario.CantidadElementosTotales();
+
+        Assert.AreEqual(2, cantidadElementosTotales);
     }
 }

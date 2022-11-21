@@ -14,7 +14,7 @@ public class InventarioTest
     [Test]
     public void Test01InventarioEmpiezaSinEspacio()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
 
 
         Assert.IsFalse(inventario.TieneEspacio(_elementoPrincipal));
@@ -23,7 +23,7 @@ public class InventarioTest
     [Test]
     public void Test02InventarioSinEspacioNoPuedeAgregarNada()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
 
         Assert.IsFalse(inventario.AgregarElemento(_elementoPrincipal));
     }
@@ -31,7 +31,7 @@ public class InventarioTest
     [Test]
     public void Test03InventarioAgregandoleUnEspacioTieneEspacio()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotInfinito = new SlotInfinitoPrueba();
 
         inventario.AgregarEspacio(slotInfinito);
@@ -42,7 +42,7 @@ public class InventarioTest
     [Test]
     public void Test04InventarioConEspacioSeAgregaSePuedeAgregarUnElemento()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotInfinito = new SlotInfinitoPrueba();
 
         inventario.AgregarEspacio(slotInfinito);
@@ -53,7 +53,7 @@ public class InventarioTest
     [Test]
     public void Test05InventarioConEspacioParaElementosEspecificosNoTieneEspacioParaOtrosElementos()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotEspecifico = new SlotEspecificoPrueba(_elementoPrincipal);
 
         inventario.AgregarEspacio(slotEspecifico);
@@ -64,7 +64,7 @@ public class InventarioTest
     [Test]
     public void Test06InventarioSeAgreganTresElementosYSeDevuelvenLaMismaCantidad()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotEspecificoPrincipal = new SlotEspecificoPrueba(_elementoPrincipal);
         IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
 
@@ -87,7 +87,7 @@ public class InventarioTest
     [Test]
     public void Test07InventarioNoSePuedeEliminarElementoQueNoTiene()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
 
         inventario.AgregarEspacio(slotEspecificoDiferente);
@@ -101,7 +101,7 @@ public class InventarioTest
     [Test]
     public void Test08InventarioDisminuyeLaCantidadConLaCantidadDeElementosDespuesDeEliminarUnElemento()
     {
-        Inventario inventario = new Inventario();
+        InventarioPrueba inventario = new InventarioPrueba();
         IEspacio slotEspecificoPrincipal = new SlotEspecificoPrueba(_elementoPrincipal);
         IEspacio slotEspecificoDiferente = new SlotEspecificoPrueba(_elementoDiferente);
 

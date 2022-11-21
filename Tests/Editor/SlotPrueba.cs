@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ItIsNotOnlyMe.Inventario;
 
-public abstract class SlotPrueba : IEspacio
+public abstract class SlotPrueba : ISlotPrueba
 {
     protected List<IElemento> _elementos;
 

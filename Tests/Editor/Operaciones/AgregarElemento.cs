@@ -11,7 +11,9 @@
             _agregado = false;
         }
 
-        public void Aplicar(IEspacio espacios)
+        public void Aplicar(IEspacio espacios) => Aplicar(espacios as ISlotPrueba);
+
+        public void Aplicar(ISlotPrueba espacios)
         {
             if (_agregado || !espacios.PuedeAgregarElemento(_elemento))
                 return;

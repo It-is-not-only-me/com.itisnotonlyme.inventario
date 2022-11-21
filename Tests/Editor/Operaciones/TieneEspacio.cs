@@ -11,7 +11,7 @@
             _tieneEspacio = false;
         }
 
-        public void Aplicar(IEspacio espacios) => _tieneEspacio |= espacios.PuedeAgregarElemento(_elementoAComprobar);
+        public void Aplicar(IEspacio espacios) => _tieneEspacio |= (espacios as ISlotPrueba).PuedeAgregarElemento(_elementoAComprobar);
 
         public bool TieneEspacioParaElemento() => _tieneEspacio;
     }
